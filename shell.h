@@ -19,5 +19,7 @@ char *read_input(void);
 char **parse_input(char *input);
 int execute_command(char **args);
 int is_executable(const char *filename);
+int builtin_env(char **args);
+char *get_input(void);
 
 #endif /* SHELL_H */
