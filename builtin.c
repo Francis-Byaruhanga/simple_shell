@@ -19,6 +19,10 @@ int execute_command(char **args)
 	{
 		exit(EXIT_SUCCESS);
 	}
+	else if (strcmp(args[0], "env") == 0)
+	{
+		return (builtin_env(args));
+	}
 
 	if (!is_executable(args[0]))
 	{
@@ -47,4 +51,24 @@ int execute_command(char **args)
 		wait(&status);
 		return (0);
 	}
+}
+
+/**
+ * builtin_env - Prints the current environment varibales.
+ *
+ * @args: An array of strings representing the command and its arguments.
+ *
+ * Return: Always 0 (Success).
+ */
+int builtin_env(char **args)
+{
+	char **env = environ;
+
+	while (*env)
+	{
+		printf("%s\n", *env);
+		env++;
+	}
+
+	return (0);
 }
