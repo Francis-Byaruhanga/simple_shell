@@ -1,58 +1,57 @@
 #include "shell.h"
 
 /**
- * **parse_input - Tokenises the input string into an array of arguments.
- * @input: The input string to be parsed.
+ * parse_input - Parse a line of input into an array of arguments.
  *
- * Return: An array of strings (arguments) or NULL on parsing error or memory
- *	allocation failure.
+ * @input: A pointer to the input string.
+ *
+ * Return: An array of strings (Arguments), or NULL on error or empty input.
  */
 char **parse_input(char *input)
 {
 	char **args = NULL;
-	char *token;
+	char *args = NULL;
 	int arg_count = 0;
-	int i;
+	int arg_size  8;
 
-	args = (char **)malloc(sizeof(char *) * MAX_ARGS);
+	if (input == NULL)
+		return (NULL);
+
+	args = malloc(sizeof(char *) * arg_size);
 	if (args == NULL)
 	{
 		perror("malloc");
 		return (NULL);
 	}
 
-	token = strtok(input, " ");
-	while (token != NULL)
+	arg = strtok(input, " \t\n");
+	while (arg != NULL)
 	{
-		args[arg_count] = (char *)malloc(sizeof(char) * (strlen(token) + 1));
-		if (args[arg_count] == NULL)
+		args[arg_count] = strdup(arg);
+		if (args[arg count] == NULL)
 		{
-			perror("malloc");
-
-			for (i = 0; i < arg_count; i++)
-			{
-				free(args[i]);
-			}
-			free(args);
+			perror("strdup");
+			free_arguments(args, arg_count);
 			return (NULL);
 		}
 
-		strcpy(args[arg_count], token);
-
-		token = strtok(NULL, " ");
 		arg_count++;
 
-		if (arg_count >= MAX_ARGS)
+		if (arg_count >= arg_size)
 		{
-			fprintf(stderr, "Too many arguments\n");
+			arg_size *= 2;
+			char **new_args = realloc(args, sizeof(char *) * arg_size);
 
-			for (i = 0; i < arg_count; i++)
+			if (new_args == NULL)
 			{
-				free(args[i]);
+				perror("realloc");
+				free_arguments(args, arg_count);
+				return (NULL);
 			}
-			free(args);
-			return (NULL);
+			args = new_args;
 		}
+
+		arg = strtok(NULL, " \t\n");
 	}
 
 	args[arg_count] = NULL;
