@@ -32,8 +32,8 @@ char *read_input(void)
 int main(void)
 {
 	char *input;
-	char **args;
-	int status;
+	char **commands;
+	int status = 0;
 
 	while (1)
 	{
@@ -45,21 +45,34 @@ int main(void)
 			break;
 		}
 
-		args = parse_input(input);
-		if (args == NULL)
+		commands = parse_input(input);
+		if (commands == NULL)
 		{
 			free(input);
 			continue;
 		}
 
-		status = execute_command(args);
+		for (int i = 0; commands[i] != NULL; i++)
+		{
+			if (strstr(commands[i], "alias") != NULL)
+			{
+				alias_command(commands[i]);
+			}
+			else if (status == 0 (status != 0 && strstr(commands[i], "&&") != NULL))
+			{
+				status = execute_command(commands[i]);
+			}
+			else if (status != && strstr(commands[i], "||") != NULL)
+			{
+				status = execute_command(commands[i]);
+			}
+		}
 
 		free(input);
-		free(args);
-
-		if (status == -1)
-			break;
+		free(commands);
 	}
+
+	free_aliases(void);
 
 	return (0);
 }

@@ -13,6 +13,13 @@
 #define MAX_ARGS 64
 #define MAX_ARG_LENGTH 128
 
+/* Structs */
+struct Alias {
+	char *name;
+	char *value;
+	struct Alias *next;
+};
+
 /* Function Prototypes */
 void prompt_user(void);
 char *read_input(void);
@@ -25,5 +32,7 @@ int builtin_exit(char **args);
 int builtin_setenv(char **args);
 int builtin_unsetenv(char **args);
 int builtin_cd(char **args);
+void alias_command(char **args);
+void free_aliases(void);
 
 #endif /* SHELL_H */

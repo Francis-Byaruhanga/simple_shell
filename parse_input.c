@@ -1,60 +1,45 @@
 #include "shell.h"
 
 /**
- * parse_input - Parse a line of input into an array of arguments.
+ * parse_input - Parse the user's input into separate commands.
+ * @input: The user's input string.
  *
- * @input: A pointer to the input string.
- *
- * Return: An array of strings (Arguments), or NULL on error or empty input.
+ * Return: An array of strings, where each string represents a command.
  */
 char **parse_input(char *input)
 {
-	char **args = NULL;
-	char *args = NULL;
-	int arg_count = 0;
-	int arg_size  8;
+	char **commands = NULL;
+	char *token;
+	int i = 0;
 
-	if (input == NULL)
-		return (NULL);
-
-	args = malloc(sizeof(char *) * arg_size);
-	if (args == NULL)
+	token = strtok(input, ";");
+	while (token != NULL)
 	{
-		perror("malloc");
-		return (NULL);
-	}
+		commands = realloc(commands, (i + 1) * sizeof(char *));
+		if (commands == NULL)
+		{
+			perror("realloc");
+			exit(EXIT_FAILURE);
+		}
 
-	arg = strtok(input, " \t\n");
-	while (arg != NULL)
-	{
-		args[arg_count] = strdup(arg);
-		if (args[arg count] == NULL)
+		commands[i] = strdup(token);
+		if (commands[i] == NULL)
 		{
 			perror("strdup");
-			free_arguments(args, arg_count);
-			return (NULL);
+			exit(EXIT_FAILURE);
 		}
 
-		arg_count++;
-
-		if (arg_count >= arg_size)
-		{
-			arg_size *= 2;
-			char **new_args = realloc(args, sizeof(char *) * arg_size);
-
-			if (new_args == NULL)
-			{
-				perror("realloc");
-				free_arguments(args, arg_count);
-				return (NULL);
-			}
-			args = new_args;
-		}
-
-		arg = strtok(NULL, " \t\n");
+		token = strtok(NULL, ";");
+		i++;
 	}
 
-	args[arg_count] = NULL;
+	commands = realloc(commands, (i + 1) * sizeof(char *));
+	if (commands == NULL)
+	{
+		perror("realloc");
+		exit(EXIT_FAILURE);
+	}
+	commands[i] = NULL;
 
-	return (args);
+	return (commands);
 }
