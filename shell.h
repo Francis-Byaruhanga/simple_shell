@@ -22,5 +22,8 @@ int is_executable(const char *filename);
 int builtin_env(char **args);
 char *get_input(void);
 int builtin_exit(char **args);
+int builtin_setenv(char **args);
+int builtin_unsetenv(char **args);
+int builtin_cd(char **args);
 
 #endif /* SHELL_H */
