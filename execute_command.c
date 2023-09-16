@@ -1,44 +1,6 @@
 #include "shell.h"
 
 /**
- * execute_command - Executes a command with the provided arguments in
- * a child process
- * @args: An array of strings representing the command and its arguments
- *
- * Return: 0 on successful execution and -1 on error, such as fork or execve
- *	failure
- */
-int execute_command(char **args)
-{
-	pid_t pid;
-	int status;
-
-	pid = fork();
-
-	if (pid == -1)
-	{
-		perror("fork");
-		return (-1);
-	}
-
-	if (pid == 0)
-	{
-		if (execve(args[0], args, NULL) == -1)
-		{
-			perror("execve");
-			return (-1);
-		}
-	}
-	else
-	{
-		wait(&status);
-		return (0);
-	}
-
-	return (0);
-}
-
-/**
  * is_executable - Checks if a command is executable in one
  * of the Path directories
  *

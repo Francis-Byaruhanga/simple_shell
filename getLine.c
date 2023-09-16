@@ -14,6 +14,7 @@ char *get_input(void)
 
 	char *input = NULL;
 	ssize_t bytes;
+	char *newline;
 
 	if (bytes_read == 0)
 	{
@@ -33,7 +34,7 @@ char *get_input(void)
 		bytes_read = bytes;
 	}
 
-	char *newline = memchr(buffer, '\n', bytes_read);
+	newline = memchr(buffer, '\n', bytes_read);
 	if (newline)
 	{
 		size_t length = (size_t)(newline - buffer) + 1;

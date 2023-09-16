@@ -12,6 +12,7 @@ char *replace_variables(char *command)
 	char *new_command = NULL;
 	char *pos = command;
 	char *start = NULL;
+	pid_t pid;
 
 	while ((start = strstr(pos, "$$")) != NULL)
 	{
@@ -26,9 +27,9 @@ char *replace_variables(char *command)
 			exit(EXIT_FAILURE);
 		}
 
-		strcpy(new_command, command, len_before);
+		strcpy(new_command, command);
 
-		pid_t pid = getpid();
+		pid = getpid();
 
 		snprintf(new_command + len_before, new_len - len_before, "%d", pid);
 		strcpy(new_command + len_before + sizeof(pid_t) - 1, start + 2);

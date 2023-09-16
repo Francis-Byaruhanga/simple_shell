@@ -21,7 +21,7 @@ int execute_command(char **args)
 	}
 	else if (strcmp(args[0], "env") == 0)
 	{
-		return (builtin_env(args));
+		return (builtin_env());
 	}
 	else if (strcmp(args[0], "setenv") == 0)
 	{
@@ -63,17 +63,18 @@ int execute_command(char **args)
 		wait(&status);
 		return (0);
 	}
+
+	return (0);
 }
 
 /**
  * builtin_env - Prints the current environment varibales.
  *
- * @args: An array of strings representing the command and its arguments.
- *
  * Return: Always 0 (Success).
  */
-int builtin_env(char **args)
+int builtin_env(void)
 {
+	extern char **environ;
 	char **env = environ;
 
 	while (*env)
@@ -140,10 +141,11 @@ int builtin_unsetenv(char **args)
 int builtin_cd(char **args)
 {
 	char *new_dir;
+	char *current_dir;
 
 	if (args[1] == NULL || strcmp(args[1], "~") == 0)
 	{
-		new_dir == getenv("HOME");
+		new_dir = getenv("HOME");
 		if (new_dir == NULL)
 		{
 			fprintf(stderr, "cd: HOME not set\n");
@@ -164,7 +166,7 @@ int builtin_cd(char **args)
 		new_dir = args[1];
 	}
 
-	char *current_dir = getcwd(NULL, 0);
+	current_dir = getcwd(NULL, 0);
 
 	if (current_dir == NULL)
 	{

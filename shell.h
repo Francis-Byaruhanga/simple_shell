@@ -12,7 +12,6 @@
 #define MAX_INPUT_LENGTH 100
 #define MAX_ARGS 64
 #define MAX_ARG_LENGTH 128
-#define WEXITSTATUS(status) (((status) & 0xFF00) >> 8)
 
 /* Structs */
 struct Alias {
@@ -25,17 +24,18 @@ struct Alias {
 void prompt_user(void);
 char *read_input(void);
 char **parse_input(char *input);
-int execute_command(char *command);
+extern int execute_command(char **args);
 int is_executable(const char *filename);
-int builtin_env(char **args);
+int builtin_env(void);
 char *get_input(void);
 int builtin_exit(char **args);
 int builtin_setenv(char **args);
 int builtin_unsetenv(char **args);
 int builtin_cd(char **args);
-void alias_command(char **args);
+int alias_command(char **args);
 void free_aliases(void);
 char *replace_variables(char *command);
 int main(int argc, char *argv[]);
+void parse_command(const char *command, char **args);
 
 #endif /* SHELL_H */

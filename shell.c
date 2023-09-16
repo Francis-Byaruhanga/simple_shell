@@ -45,7 +45,9 @@ int main(int argc, char *argv[])
 {
 	char *input;
 	char **commands;
+	char line[1024];
 	int status = 0;
+	int i = 0;
 
 	if (argc == 2)
 	{
@@ -57,8 +59,6 @@ int main(int argc, char *argv[])
 			return (1);
 		}
 
-		char line[1024];
-
 		while (fgets(line, sizeof(line), file))
 		{
 			line[strcspn(line, "\n")] = '\0';
@@ -67,15 +67,15 @@ int main(int argc, char *argv[])
 			if (commands == NULL)
 			continue;
 
-			for (int i = 0; commands[i] != NULL; i++)
+			for (i = 0; commands[i] != NULL; i++)
 			{
 				if (status == 0 || (status != 0 && strstr(commands[i], "&&") != NULL))
 				{
-					status = execute_command(commands[i]);
+					status = execute_command(&commands[i]);
 				}
 				else if (status != 0 && strstr(commands[i], "||") != NULL)
 				{
-					status = execute_command(commands[i]);
+					status = execute_command(&commands[i]);
 				}
 			}
 
@@ -102,15 +102,15 @@ int main(int argc, char *argv[])
 				continue;
 			}
 
-			for (int i = 0; commands[i] != NULL; i++)
+			for (i = 0; commands[i] != NULL; i++)
 			{
 				if (status == 0 || (status != 0 && strstr(commands[i], "&&") != NULL))
 				{
-					status = execute_command(commands[i]);
+					status = execute_command(commands);
 				}
 				else if (status != 0 && strstr(commands[i], "||") != NULL)
 				{
-					status = execute_command(commands[i]);
+					status = execute_command(&commands[i]);
 				}
 			}
 

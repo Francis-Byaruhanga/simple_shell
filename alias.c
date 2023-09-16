@@ -6,9 +6,13 @@ struct Alias *alias_list = NULL;
  * alias_command - Handle the alias built-in command.
  *
  * @args: An array of strings containing the command-line arguments.
+ *
+ * Return: 0 on Success.
  */
-void alias_command(char **args)
+int alias_command(char **args)
 {
+	struct Alias *new_alias;
+
 	if (args[1] == NULL)
 	{
 		struct Alias *current = alias_list;
@@ -28,7 +32,7 @@ void alias_command(char **args)
 			if (strcmp(current->name, args[1]) == 0)
 			{
 				printf("%s='%s'\n", current->name, current->value);
-				return;
+				return (0);
 			}
 			current = current->next;
 		}
@@ -46,12 +50,12 @@ void alias_command(char **args)
 			{
 				free(current->value);
 				current->value = strdup(value);
-				return;
+				return (0);
 			}
 			current = current->next;
 		}
 
-		struct Alias *new_alias = (struct Alias *)malloc(sizeof(struct Alias));
+		new_alias = (struct Alias *)malloc(sizeof(struct Alias));
 
 		if (new_alias == NULL)
 		{
@@ -64,6 +68,8 @@ void alias_command(char **args)
 		new_alias->next = alias_list;
 		alias_list = new_alias;
 	}
+
+	return (0);
 }
 
 /**
