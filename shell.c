@@ -8,71 +8,117 @@
 char *read_input(void)
 {
 	char *input = NULL;
-	size_t bufsize = 0;
+	size_t len = 0;
+	ssize_t read;
 
-	if (getline(&input, &bufsize, stdin) == -1)
+	printf("#cisfun$ ");
+	read = getline(&input, &len, stdin);
+
+	if (read == -1)
 	{
-		if (feof(stdin))
-		{
-			free(input);
-			return (NULL);
-		}
-		perror("getline");
-		exit(EXIT_FAILURE);
+		free(input);
+		return (NULL);
+	}
+
+	if (input[0] == '#')
+	{
+		free(input);
+		return (NULL);
+	}
+
+	if (input[read - 1] == '\n')
+	{
+		input[read - 1] = '\0';
 	}
 
 	return (input);
 }
 
 /**
- * main - Entry point of the simple shell
+ * main - Entry point of the simple shell.
+ * @argc: The number of commandline arguments
+ * @argv: An array of strings containing the commandline arguments.
  *
- * Return: Always 0.
+ * Return: The exit status of the shell program.
  */
-int main(void)
+int main(int argc, char *argv[])
 {
 	char *input;
 	char **commands;
 	int status = 0;
 
-	while (1)
+	if (argc == 2)
 	{
-		printf("#cisfun$ ");
-		input = read_input();
-		if (!input)
+		FILE *file = fopen(argv[1], "r");
+
+		if (!file)
 		{
-			printf("\n");
-			break;
+			perror("Error opening file");
+			return (1);
 		}
 
-		commands = parse_input(input);
-		if (commands == NULL)
+		char line[1024];
+
+		while (fgets(line, sizeof(line), file))
 		{
-			free(input);
+			line[strcspn(line, "\n")] = '\0';
+
+			commands = parse_input(line);
+			if (commands == NULL)
 			continue;
+
+			for (int i = 0; commands[i] != NULL; i++)
+			{
+				if (status == 0 || (status != 0 && strstr(commands[i], "&&") != NULL))
+				{
+					status = execute_command(commands[i]);
+				}
+				else if (status != 0 && strstr(commands[i], "||") != NULL)
+				{
+					status = execute_command(commands[i]);
+				}
+			}
+
+			free(commands);
 		}
 
-		for (int i = 0; commands[i] != NULL; i++)
+		fclose(file);
+	}
+	else
+	{
+		while (1)
 		{
-			if (strstr(commands[i], "alias") != NULL)
+			input = read_input();
+			if (!input)
 			{
-				alias_command(commands[i]);
+				printf("\n");
+				break;
 			}
-			else if (status == 0 (status != 0 && strstr(commands[i], "&&") != NULL))
-			{
-				status = execute_command(commands[i]);
-			}
-			else if (status != && strstr(commands[i], "||") != NULL)
-			{
-				status = execute_command(commands[i]);
-			}
-		}
 
-		free(input);
-		free(commands);
+			commands = parse_input(input);
+			if (commands == NULL)
+			{
+				free(input);
+				continue;
+			}
+
+			for (int i = 0; commands[i] != NULL; i++)
+			{
+				if (status == 0 || (status != 0 && strstr(commands[i], "&&") != NULL))
+				{
+					status = execute_command(commands[i]);
+				}
+				else if (status != 0 && strstr(commands[i], "||") != NULL)
+				{
+					status = execute_command(commands[i]);
+				}
+			}
+
+			free(input);
+			free(commands);
+		}
 	}
 
-	free_aliases(void);
+	return (status);
 
-	return (0);
 }
