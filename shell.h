@@ -24,7 +24,7 @@ struct Alias {
 void prompt_user(void);
 char *read_input(void);
 char **parse_input(char *input);
-extern int execute_command(char **args);
+int execute_command(char **args);
 int is_executable(const char *filename);
 int builtin_env(void);
 char *get_input(void);
